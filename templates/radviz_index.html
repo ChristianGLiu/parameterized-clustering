@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap & JQuery -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    $( "#tabs" ).tabs();
+  } );
+  </script>
+
+    <!-- D3.js -->
+    <script src="static/lib/d3.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <!-- custom css & js files -->
+    <script src='static/lib/js-common-func.js'></script>
+    <script src='static/lib/assignment2.radviz.js'></script>
+    <script src='static/lib/assignment4.correlation.matrix.js'></script>
+    <link rel="stylesheet" href="static/style.css">
+
+
+</head>
+<body>
+
+<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+    <div class="container-fluid col-md-2">
+        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Assignment 4 Dashboard</a>
+    </div>
+    <div class="container-fluid col-md-10">
+        <h2>Dynamic Tabs</h2>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <b></b>Dataset:
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="?data=iris">
+                            Iris
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="?data=wine">
+                            Wine
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="?data=car">
+                            MtCars
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </nav>
+        <div class="container-fluid col-md-10" id="tabs">
+            <ul>
+                <li><a href="#home">Radviz</a></li>
+                <li><a href="#menu1">correlation matrix</a>
+                </li>
+                <li><a href="#menu2">Clustering</a></li>
+                <li><a href="#menu3">Menu 3</a></li>
+            </ul>
+
+
+            <div id="home">
+                <h3>Radviz</h3>
+                <div class="col-xs-12" id="toolbar" style="display: -webkit-flex; /* Safari */display: flex;">
+                    <div id="toolbar_featureLables"></div>
+
+                </div>
+
+                <div class="col-xs-12" id="mainPanel">
+
+                </div>
+
+            </div>
+            <div id="menu1">
+                <h3>correlation matrix</h3>
+
+                <div class="col-xs-12" id="matrix_mainPanel">
+
+                </div>
+            </div>
+            <div id="menu2">
+                <h3>Clustering</h3>
+                <div class="col-xs-12" id="cluster_toolbar" style="display: -webkit-flex; /* Safari */display: flex;">
+                    <div id="cluster_toolbar_featureLables"></div>
+
+                </div>
+                <div class="col-xs-12" id="cluster_mainPanel">
+
+                </div>
+            </div>
+            <div id="menu3">
+                <h3>Menu 3</h3>
+                <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt
+                    explicabo.</p>
+            </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+{% extends "star-coordinates-index.html" %}
+
+{% block content %}
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+            <h2>Dashboard</h2>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group mr-2">
+                    <button class="btn btn-sm btn-outline-secondary">Share</button>
+                    <button class="btn btn-sm btn-outline-secondary">Export</button>
+                </div>
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                    <span data-feather="calendar"></span>
+                    This week
+                </button>
+            </div>
+        </div>
+
+        <div class="row col-md-12">
+            <div id="myDiv1" class="col-md-4"><!-- Plotly chart will be drawn inside this DIV --></div>
+            <div id="myDiv2" class="col-md-4"><!-- Plotly chart will be drawn inside this DIV --></div>
+            <div id="myDiv7" class="col-md-4"><!-- Plotly chart will be drawn inside this DIV --></div>
+        </div>
+
+        <div class="row col-md-12">
+            <div id="myDiv3" class="col-md-9"><!-- Plotly chart will be drawn inside this DIV --></div>
+            <div id="myDiv4" class="col-md-3"><!-- Plotly chart will be drawn inside this DIV --></div>
+        </div>
+
+        <div class="row col-md-12">
+            <div id="myDiv5" class="col-md-6"><!-- Plotly chart will be drawn inside this DIV --></div>
+            <div id="myDiv6" class="col-md-6"><!-- Plotly chart will be drawn inside this DIV --></div>
+        </div>
+
+        <div class="row col-md-12">
+
+            <div id="myDiv8" class="col-md-12"><!-- Plotly chart will be drawn inside this DIV --></div>
+        </div>
+
+        <div class="row col-md-12">
+            <div id="myDiv9" class="col-md-6"><!-- Plotly chart will be drawn inside this DIV --></div>
+            <div id="myDiv10" class="col-md-6"><!-- Plotly chart will be drawn inside this DIV --></div>
+        </div>
+
+        <div class="row col-md-12">
+            <div id="myDiv11" class="col-md-12"><!-- Plotly chart will be drawn inside this DIV --></div>
+        </div>
+    </main>
+{% endblock %}
