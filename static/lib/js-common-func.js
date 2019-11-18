@@ -1,50 +1,119 @@
+//a global varible to wait for data coming out from backend
+// for assignment 1 data will use more time
+let timeout = 3000;
+
 /**
  *
  * @param name
  * @returns {string}
  */
-function getRequest(name){
-   var url_string = window.location.href; // www.test.com?filename=test
-    var url = new URL(url_string);
-    var paramValue = url.searchParams.get(name);
-      return paramValue;
+function getRequest(name) {
+    let url_string = window.location.href; // www.test.com?filename=test
+    let url = new URL(url_string);
+    let paramValue = url.searchParams.get(name);
+    return paramValue;
 }
 
 /**
  *
  */
-function goToClustering(){
-   $("#actual_cust").hide();
-   $("#pred_cust").show();
-   $("#actual_checkbox").checked = true;
+function goToClustering() {
+    $("#actual_cust").hide();
+    $("#pred_cust").show();
+    $("#actual_checkbox").checked = true;
 }
 
 /**
  *
  */
-function goToActual(){
+function goToActual() {
     $("#actual_cust").show();
-   $("#pred_cust").hide();
-   $("#actual_checkbox").checked = false;
+    $("#pred_cust").hide();
+    $("#actual_checkbox").checked = false;
+}
+
+/**
+ *
+ * @param allRows
+ * @param columns
+ * @param graphOptions
+ */
+function generateTables(allRows, columns, graphOptions) {
+
+    let isAll = 'department_id';
+    if (columns.includes('product_id')) {
+        isAll = 'product_id';
+    }
+
+    function toArray(column) {
+        let map_y = new Map(Object.entries(allRows[column]));
+        let Y = Array.from(map_y.values());
+        return Y;
+    }
+
+    let values = [];
+    let dataValues = [];
+    for (ii = 1; ii < columns.length; ii++) {
+        let Y = toArray(columns[ii]);
+        values.push(Y);
+        dataValues.push(["<b>" + columns[ii] + "</b>"]);
+    }
+
+
+    let data = [{
+        type: 'table',
+        header: {
+            values: dataValues,
+            align: "center",
+            line: {width: 1, color: 'black'},
+            fill: {color: "grey"},
+            font: {family: "Arial", size: 12, color: "white"}
+        },
+        cells: {
+            values: values,
+            align: "center",
+            line: {color: "black", width: 1},
+            font: {family: "Arial", size: 11, color: ["black"]}
+        }
+    }];
+
+
+    Plotly.plot(graphOptions['div'], data);
 }
 
 document.addEventListener('DOMContentLoaded', function (event) {
 
-    let jsonUrl = 'http://127.0.0.1:5000/read_iris';
-    let jsonUrl_corr = 'http://127.0.0.1:5000/read_iris_correlation';
-    let jsonUrl_cust = 'http://127.0.0.1:5000/read_iris_clustering';
+    let jsonUrl = '/read_iris';
+    let jsonUrl_corr = '/read_iris_correlation';
+    let jsonUrl_cust = '/read_iris_clustering';
+    let jsonUrl_table = '/show_table?table=iris';
+    timeout = 3000;
 
-    if(getRequest('data') === 'wine') {
-        jsonUrl = 'http://127.0.0.1:5000/read_wine';
-        jsonUrl_corr = 'http://127.0.0.1:5000/read_wine_correlation';
-        jsonUrl_cust = 'http://127.0.0.1:5000/read_wine_clustering';
+    if (getRequest('data') === 'wine') {
+        jsonUrl = '/read_wine';
+        jsonUrl_corr = '/read_wine_correlation';
+        jsonUrl_cust = '/read_wine_clustering';
+        jsonUrl_table = '/show_table?table=wine';
+        timeout = 3000;
     }
 
-    if(getRequest('data') === 'car') {
-        jsonUrl = 'http://127.0.0.1:5000/read_car';
-        jsonUrl_corr = 'http://127.0.0.1:5000/read_car_correlation';
-        jsonUrl_cust = 'http://127.0.0.1:5000/read_car_clustering';
+    if (getRequest('data') === 'car') {
+        jsonUrl = '/read_car';
+        jsonUrl_corr = '/read_car_correlation';
+        jsonUrl_cust = '/read_car_clustering';
+        jsonUrl_table = '/show_table?table=car';
+        timeout = 3000;
     }
+
+    if (getRequest('data') === 'assignment1') {
+        jsonUrl = '/read_assignment1';
+        jsonUrl_corr = '/read_assignment1_correlation';
+        jsonUrl_cust = '/read_assignment1_clustering';
+        jsonUrl_table = '/show_table?table=assignment1';
+        timeout = 10000;
+    }
+
+    console.log("jsonUrl:", jsonUrl);
 
     //generate assignment 2 Radviz from backend REST service response
     d3.json(jsonUrl, function (error, data) {
@@ -61,10 +130,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
         let finalArr = [];
 
-        jsonObj.forEach(function(element){
+        jsonObj.forEach(function (element) {
             let tempArr = [];
-            firstRow.forEach(function(aValue){
-               tempArr.push(element[aValue]);
+            firstRow.forEach(function (aValue) {
+                tempArr.push(element[aValue]);
             });
             finalArr.push(tempArr);
         });
@@ -82,48 +151,79 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
     });
 
-    $( "#cluster_toolbar_parameters input" ).change(function() {
-         tuneupParameters(jsonUrl_cust, $("#n_clusters").val(), $('#n_init').val(), $('#random_state').val(), $('#algorithm').val());
+    generatePlot(jsonUrl_table, generateTables,
+        [], {
+            'title': 'Retrieval Table View',
+            'div': 'myDiv_table'
+        });
+
+    $("#cluster_toolbar_parameters input").change(function () {
+        tuneupParameters(jsonUrl_cust, $("#n_clusters").val(), $('#n_init').val(), $('#random_state').val(), $('#algorithm').val());
     });
 
-    $( "#cluster_toolbar_parameters select" ).change(function() {
+    $("#cluster_toolbar_parameters select").change(function () {
         //$( "select#foo option:checked" ).val();
-         tuneupParameters(jsonUrl_cust, $("#n_clusters").val(), $('#n_init').val(), $('#random_state').val(), $('#algorithm').val());
+        tuneupParameters(jsonUrl_cust, $("#n_clusters").val(), $('#n_init').val(), $('#random_state').val(), $('#algorithm').val());
     });
 
     $("#actual_cust").hide();
 
-    /**
- *
- * @param jsonUrl_cust
- * @param n_clusters
- * @param init
- * @param n_init
- * @param random_state
- * @param algorithm
- */
-function tuneupParameters(jsonUrl_cust, n_clusters, n_init, random_state, algorithm) {
-    //generate assignment 4 clustering new pred
-    let requestParameter = '?n_clusters='+n_clusters;
-    requestParameter += '&n_init='+n_init;
-    requestParameter += '&random_state='+random_state;
-    requestParameter += '&algorithm='+algorithm;
-    let finalUrl = jsonUrl_cust + requestParameter;
-     $('#cluster_mainPanel').empty();
-    d3.json(finalUrl, function (error, data) {
-        let jsonObj_orig = JSON.parse(data.df);
-        let jsonObj = JSON.parse(data.new_df);
-        init(jsonObj, "#cluster_mainPanel");
-        init(jsonObj_orig, "#cluster_mainPanel_orig");
 
-    });
-}
+    /**
+     *
+     * @param jsonUrl
+     * @param func
+     * @param columns
+     * @param graphOptions
+     */
+    function generatePlot(jsonUrl, func, columns, graphOptions) {
+        console.log("generate plot " + jsonUrl);
+        d3.json(jsonUrl, function (error, data) {
+            if (error) {
+                console.warn(error);
+            }
+            //console.log("generate plot" + data);
+            func(data, columns, graphOptions)
+        });
+    }
+
+    /**
+     *
+     * @param jsonUrl_cust
+     * @param n_clusters
+     * @param init
+     * @param n_init
+     * @param random_state
+     * @param algorithm
+     */
+    function tuneupParameters(jsonUrl_cust, n_clusters, n_init, random_state, algorithm) {
+        //generate assignment 4 clustering new pred
+        let requestParameter = '?n_clusters=' + n_clusters;
+        requestParameter += '&n_init=' + n_init;
+        requestParameter += '&random_state=' + random_state;
+        requestParameter += '&algorithm=' + algorithm;
+        let finalUrl = jsonUrl_cust + requestParameter;
+        $('#cluster_mainPanel').empty();
+        d3.json(finalUrl, function (error, data) {
+            let jsonObj_orig = JSON.parse(data.df);
+            let jsonObj = JSON.parse(data.new_df);
+            init(jsonObj, "#cluster_mainPanel");
+            init(jsonObj_orig, "#cluster_mainPanel_orig");
+
+        });
+    }
+
+
+//
+// generatePlot('/show_table?department_id=1', generateTables,
+//         ['product_id', 'product_name', 'order_hour_of_day', 'order_dow', 'counts'], {
+//             'title': 'Retrieval Table View',
+//             'div': 'myDiv_table'
+//         });
 
     setTimeout(function () {
         $("#tabs").tabs();
-    }, 3000);
-
-
+    }, timeout);
 
 
 });

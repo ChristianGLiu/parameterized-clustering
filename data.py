@@ -5,7 +5,7 @@ from sklearn.cluster import KMeans
 
 
 class readAssignment4Data:
-    def __init__(self, iris, mtcars, wine,
+    def __init__(self, iris, mtcars, wine, assignment1,
                  prefix_dir='csv'):
         self.prefix_dir = prefix_dir
         if not os.path.isdir(self.prefix_dir):
@@ -14,9 +14,11 @@ class readAssignment4Data:
         self._iris = None
         self._mtcars = None
         self._wine = None
+        self._assignment1 = None
         self.iris_path = os.path.join(prefix_dir, iris)
         self.mtcars_path = os.path.join(prefix_dir, mtcars)
         self.wine_path = os.path.join(prefix_dir, wine)
+        self.assignment1_path = os.path.join(prefix_dir, assignment1)
 
     @property
     def iris(self) -> pd.DataFrame:
@@ -36,6 +38,12 @@ class readAssignment4Data:
             self._wine = pd.read_csv(self.wine_path)
         return self._wine
 
+    @property
+    def assignment1(self) -> pd.DataFrame:
+        if self._assignment1 is None:
+            self._assignment1 = pd.read_csv(self.assignment1_path)
+        return self._assignment1
+
 
 def if_exists(csv_path: str) -> str:
     if not os.path.isfile(csv_path):
@@ -44,7 +52,7 @@ def if_exists(csv_path: str) -> str:
 
 
 def getAssignment4Data() -> readAssignment4Data:
-    rawData = readAssignment4Data('iris.csv', 'mtcars.csv', 'winequality-red.csv')
+    rawData = readAssignment4Data('iris.csv', 'mtcars.csv', 'winequality-red.csv', 'new_dirty_halfbaked.csv')
     return rawData
 
 
@@ -61,6 +69,10 @@ def readWine() -> readAssignment4Data:
 def readCar() -> readAssignment4Data:
     rawData = getAssignment4Data()
     return rawData.mtcars.to_json(orient='records')
+
+def readAssignment1() -> readAssignment4Data:
+    rawData = getAssignment4Data()
+    return rawData.assignment1.to_json(orient='records')
 
 
 def read_iris_correlation() -> readAssignment4Data:
@@ -84,6 +96,16 @@ def read_car_correlation() -> readAssignment4Data:
     from sklearn import preprocessing
     le = preprocessing.LabelEncoder()
     rawData = getAssignment4Data().iris
+    columns = rawData.columns
+    label = columns[len(columns)-1]
+    rawData[label] = le.fit_transform(rawData[label])
+    correlation_result = rawData.corr()
+    return correlation_result.to_json(orient='records')
+
+def read_assignment1_correlation() -> readAssignment4Data:
+    from sklearn import preprocessing
+    le = preprocessing.LabelEncoder()
+    rawData = getAssignment4Data().assignment1
     columns = rawData.columns
     label = columns[len(columns)-1]
     rawData[label] = le.fit_transform(rawData[label])
@@ -135,6 +157,23 @@ def read_wine_clustering(n_clusters=0, n_init=10, random_state=None, algorithm='
 
 def read_car_clustering(n_clusters=0, n_init=10, random_state=None, algorithm='auto') -> readAssignment4Data:
     rawData = getAssignment4Data().mtcars
+    rawData_new = rawData.copy()
+    columns = rawData.columns
+    Y = rawData_new[columns[len(columns)-1]]
+    if random_state == 'None':
+        random_state = None
+    if n_clusters < 1:
+        n_clusters = Y.nunique()
+    X = rawData_new.drop(columns[len(columns) - 1], axis=1)
+    # here we knew there will be k clusters in labels, we will adjust this value in later parameters optimization
+    kmeans = KMeans(n_clusters=n_clusters, n_init=n_init, random_state=random_state,
+                    algorithm=algorithm).fit(X)
+    pred_y = kmeans.labels_
+    rawData_new[columns[len(columns)-1]] = pred_y
+    return {'df': rawData.to_json(orient='records'), 'new_df':rawData_new.to_json(orient='records')}
+
+def read_assignment1_clustering(n_clusters=0, n_init=10, random_state=None, algorithm='auto') -> readAssignment4Data:
+    rawData = getAssignment4Data().assignment1
     rawData_new = rawData.copy()
     columns = rawData.columns
     Y = rawData_new[columns[len(columns)-1]]

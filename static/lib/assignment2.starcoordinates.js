@@ -363,7 +363,7 @@
                             .attr('dominat-baseline', d => Math.sin(d.theta) < 0 ? 'baseline' : 'hanging')
                             .attr('dx', d => Math.cos(d.theta) * 15)
                             .attr('dy', d => Math.sin(d.theta) < 0 ? Math.sin(d.theta) * (15) : Math.sin(d.theta) * (15) + 10)
-                            .text(d => d.name + ' DRAG ME')
+                            .text(d => d.name)
                             .attr('font-size', '15pt')
                             .call(d3.drag()
                                 .on('start', function (d) {
