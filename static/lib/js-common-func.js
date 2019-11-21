@@ -38,12 +38,9 @@ function goToActual() {
  * @param columns
  * @param graphOptions
  */
-function generateTables(allRows, columns, graphOptions) {
+function generateTables(allRows, graphOptions) {
 
-    let isAll = 'department_id';
-    if (columns.includes('product_id')) {
-        isAll = 'product_id';
-    }
+    let columns = Object.keys(allRows);
 
     function toArray(column) {
         let map_y = new Map(Object.entries(allRows[column]));
@@ -53,7 +50,7 @@ function generateTables(allRows, columns, graphOptions) {
 
     let values = [];
     let dataValues = [];
-    for (ii = 1; ii < columns.length; ii++) {
+    for (ii = 0; ii < columns.length; ii++) {
         let Y = toArray(columns[ii]);
         values.push(Y);
         dataValues.push(["<b>" + columns[ii] + "</b>"]);
@@ -144,15 +141,17 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
     //generate assignment 4 clustering new pred labels
     d3.json(jsonUrl_cust, function (error, data) {
+        let score = data.score;
         let jsonObj_orig = JSON.parse(data.df);
         let jsonObj = JSON.parse(data.new_df);
+        $('#ari_score').html(score);
         init(jsonObj, "#cluster_mainPanel");
         init(jsonObj_orig, "#cluster_mainPanel_orig");
 
     });
 
     generatePlot(jsonUrl_table, generateTables,
-        [], {
+        {
             'title': 'Retrieval Table View',
             'div': 'myDiv_table'
         });
@@ -176,14 +175,14 @@ document.addEventListener('DOMContentLoaded', function (event) {
      * @param columns
      * @param graphOptions
      */
-    function generatePlot(jsonUrl, func, columns, graphOptions) {
+    function generatePlot(jsonUrl, func, graphOptions) {
         console.log("generate plot " + jsonUrl);
         d3.json(jsonUrl, function (error, data) {
             if (error) {
                 console.warn(error);
             }
             //console.log("generate plot" + data);
-            func(data, columns, graphOptions)
+            func(data, graphOptions)
         });
     }
 

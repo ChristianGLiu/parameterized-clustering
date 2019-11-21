@@ -1,7 +1,4 @@
-from __future__ import print_function # In python 2.7 for print function compatibility
 import data
-import gc
-import sys
 from flask import Flask, jsonify, render_template, request
 
 application = Flask(__name__)
@@ -97,7 +94,7 @@ def read_assignment1_clustering():
 
 @application.route('/show_table')
 def show_table():
-    table_name = request.args.get('table_name')
+    table_name = request.args.get('table')
     return jsonify(data.show_table(table_name))
 
 

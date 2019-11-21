@@ -2,6 +2,7 @@ import os
 
 import pandas as pd
 from sklearn.cluster import KMeans
+from sklearn import metrics
 
 
 class readAssignment4Data:
@@ -133,8 +134,9 @@ def read_iris_clustering(n_clusters=0, n_init=10, random_state=None, algorithm='
     print("ready to clustering:", n_clusters, n_init, random_state, algorithm)
     kmeans = KMeans(n_clusters=n_clusters, n_init=n_init, random_state=random_state, algorithm=algorithm).fit(X)
     pred_y = kmeans.labels_
+    measurement = metrics.adjusted_rand_score(Y, pred_y)
     rawData_new[columns[len(columns)-1]] = pred_y
-    return {'df': rawData.to_json(orient='records'), 'new_df':rawData_new.to_json(orient='records')}
+    return {'score': measurement, 'df': rawData.to_json(orient='records'), 'new_df':rawData_new.to_json(orient='records')}
 
 
 def read_wine_clustering(n_clusters=0, n_init=10, random_state=None, algorithm='auto') -> readAssignment4Data:
@@ -151,8 +153,10 @@ def read_wine_clustering(n_clusters=0, n_init=10, random_state=None, algorithm='
     kmeans = KMeans(n_clusters=n_clusters, n_init=n_init, random_state=random_state,
                     algorithm=algorithm).fit(X)
     pred_y = kmeans.labels_
-    rawData_new[columns[len(columns)-1]] = pred_y
-    return {'df': rawData.to_json(orient='records'), 'new_df':rawData_new.to_json(orient='records')}
+    measurement = metrics.adjusted_rand_score(Y, pred_y)
+    rawData_new[columns[len(columns) - 1]] = pred_y
+    return {'score': measurement, 'df': rawData.to_json(orient='records'),
+            'new_df': rawData_new.to_json(orient='records')}
 
 
 def read_car_clustering(n_clusters=0, n_init=10, random_state=None, algorithm='auto') -> readAssignment4Data:
@@ -169,8 +173,10 @@ def read_car_clustering(n_clusters=0, n_init=10, random_state=None, algorithm='a
     kmeans = KMeans(n_clusters=n_clusters, n_init=n_init, random_state=random_state,
                     algorithm=algorithm).fit(X)
     pred_y = kmeans.labels_
-    rawData_new[columns[len(columns)-1]] = pred_y
-    return {'df': rawData.to_json(orient='records'), 'new_df':rawData_new.to_json(orient='records')}
+    measurement = metrics.adjusted_rand_score(Y, pred_y)
+    rawData_new[columns[len(columns) - 1]] = pred_y
+    return {'score': measurement, 'df': rawData.to_json(orient='records'),
+            'new_df': rawData_new.to_json(orient='records')}
 
 def read_assignment1_clustering(n_clusters=0, n_init=10, random_state=None, algorithm='auto') -> readAssignment4Data:
     rawData = getAssignment4Data().assignment1
@@ -186,5 +192,19 @@ def read_assignment1_clustering(n_clusters=0, n_init=10, random_state=None, algo
     kmeans = KMeans(n_clusters=n_clusters, n_init=n_init, random_state=random_state,
                     algorithm=algorithm).fit(X)
     pred_y = kmeans.labels_
-    rawData_new[columns[len(columns)-1]] = pred_y
-    return {'df': rawData.to_json(orient='records'), 'new_df':rawData_new.to_json(orient='records')}
+    measurement = metrics.adjusted_rand_score(Y, pred_y)
+    rawData_new[columns[len(columns) - 1]] = pred_y
+    return {'score': measurement, 'df': rawData.to_json(orient='records'),
+            'new_df': rawData_new.to_json(orient='records')}
+
+def show_table(table='iris') -> readAssignment4Data:
+    rawData = None
+    if table=='iris':
+        rawData = getAssignment4Data().iris
+    if table=='assignment1':
+        rawData = getAssignment4Data().assignment1
+    if table=='car':
+        rawData = getAssignment4Data().mtcars
+    if table=='wine':
+        rawData = getAssignment4Data().wine
+    return rawData.to_dict()
