@@ -1,7 +1,7 @@
 import os
 
 import pandas as pd
-from sklearn.cluster import KMeans
+from sklearn.cluster import MiniBatchKMeans
 from sklearn import metrics
 
 
@@ -103,6 +103,9 @@ def read_car_correlation() -> readAssignment4Data:
     correlation_result = rawData.corr()
     return correlation_result.to_json(orient='records')
 
+'''
+This is the function to deal with the assignment 1 dataset correlation
+'''
 def read_assignment1_correlation() -> readAssignment4Data:
     from sklearn import preprocessing
     le = preprocessing.LabelEncoder()
@@ -114,7 +117,7 @@ def read_assignment1_correlation() -> readAssignment4Data:
     return correlation_result.to_json(orient='records')
 
 
-def read_iris_clustering(n_clusters=0, n_init=10, random_state=None, algorithm='auto') -> readAssignment4Data:
+def read_iris_clustering(n_clusters=0, n_init=10, random_state=None, batch_size=100) -> readAssignment4Data:
     rawData = getAssignment4Data().iris
     rawData_new = rawData.copy()
     columns = rawData.columns
@@ -131,15 +134,15 @@ def read_iris_clustering(n_clusters=0, n_init=10, random_state=None, algorithm='
     n_clusters = int(n_clusters)
     X = rawData_new.drop(columns[len(columns)-1], axis=1)
     #here we knew there will be k clusters in labels, we will adjust this value in later parameters optimization
-    print("ready to clustering:", n_clusters, n_init, random_state, algorithm)
-    kmeans = KMeans(n_clusters=n_clusters, n_init=n_init, random_state=random_state, algorithm=algorithm).fit(X)
+    print("ready to clustering:", n_clusters, n_init, random_state, batch_size)
+    kmeans = MiniBatchKMeans(n_clusters=n_clusters, n_init=n_init, random_state=random_state, batch_size=batch_size).fit(X)
     pred_y = kmeans.labels_
     measurement = metrics.adjusted_rand_score(Y, pred_y)
     rawData_new[columns[len(columns)-1]] = pred_y
     return {'score': measurement, 'df': rawData.to_json(orient='records'), 'new_df':rawData_new.to_json(orient='records')}
 
 
-def read_wine_clustering(n_clusters=0, n_init=10, random_state=None, algorithm='auto') -> readAssignment4Data:
+def read_wine_clustering(n_clusters=0, n_init=10, random_state=None, batch_size=100) -> readAssignment4Data:
     rawData = getAssignment4Data().wine
     rawData_new = rawData.copy()
     columns = rawData.columns
@@ -150,8 +153,7 @@ def read_wine_clustering(n_clusters=0, n_init=10, random_state=None, algorithm='
         n_clusters = Y.nunique()
     X = rawData_new.drop(columns[len(columns) - 1], axis=1)
     # here we knew there will be k clusters in labels, we will adjust this value in later parameters optimization
-    kmeans = KMeans(n_clusters=n_clusters, n_init=n_init, random_state=random_state,
-                    algorithm=algorithm).fit(X)
+    kmeans = MiniBatchKMeans(n_clusters=n_clusters, n_init=n_init, random_state=random_state, batch_size=batch_size).fit(X)
     pred_y = kmeans.labels_
     measurement = metrics.adjusted_rand_score(Y, pred_y)
     rawData_new[columns[len(columns) - 1]] = pred_y
@@ -159,7 +161,7 @@ def read_wine_clustering(n_clusters=0, n_init=10, random_state=None, algorithm='
             'new_df': rawData_new.to_json(orient='records')}
 
 
-def read_car_clustering(n_clusters=0, n_init=10, random_state=None, algorithm='auto') -> readAssignment4Data:
+def read_car_clustering(n_clusters=0, n_init=10, random_state=None, batch_size=100) -> readAssignment4Data:
     rawData = getAssignment4Data().mtcars
     rawData_new = rawData.copy()
     columns = rawData.columns
@@ -170,15 +172,14 @@ def read_car_clustering(n_clusters=0, n_init=10, random_state=None, algorithm='a
         n_clusters = Y.nunique()
     X = rawData_new.drop(columns[len(columns) - 1], axis=1)
     # here we knew there will be k clusters in labels, we will adjust this value in later parameters optimization
-    kmeans = KMeans(n_clusters=n_clusters, n_init=n_init, random_state=random_state,
-                    algorithm=algorithm).fit(X)
+    kmeans = MiniBatchKMeans(n_clusters=n_clusters, n_init=n_init, random_state=random_state, batch_size=batch_size).fit(X)
     pred_y = kmeans.labels_
     measurement = metrics.adjusted_rand_score(Y, pred_y)
     rawData_new[columns[len(columns) - 1]] = pred_y
     return {'score': measurement, 'df': rawData.to_json(orient='records'),
             'new_df': rawData_new.to_json(orient='records')}
 
-def read_assignment1_clustering(n_clusters=0, n_init=10, random_state=None, algorithm='auto') -> readAssignment4Data:
+def read_assignment1_clustering(n_clusters=0, n_init=10, random_state=None, batch_size=100) -> readAssignment4Data:
     rawData = getAssignment4Data().assignment1
     rawData_new = rawData.copy()
     columns = rawData.columns
@@ -189,8 +190,7 @@ def read_assignment1_clustering(n_clusters=0, n_init=10, random_state=None, algo
         n_clusters = Y.nunique()
     X = rawData_new.drop(columns[len(columns) - 1], axis=1)
     # here we knew there will be k clusters in labels, we will adjust this value in later parameters optimization
-    kmeans = KMeans(n_clusters=n_clusters, n_init=n_init, random_state=random_state,
-                    algorithm=algorithm).fit(X)
+    kmeans = MiniBatchKMeans(n_clusters=n_clusters, n_init=n_init, random_state=random_state, batch_size=batch_size).fit(X)
     pred_y = kmeans.labels_
     measurement = metrics.adjusted_rand_score(Y, pred_y)
     rawData_new[columns[len(columns) - 1]] = pred_y

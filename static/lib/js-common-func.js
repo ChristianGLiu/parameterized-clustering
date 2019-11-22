@@ -1,6 +1,6 @@
 //a global varible to wait for data coming out from backend
 // for assignment 1 data will use more time
-let timeout = 3000;
+let timeout = 5000;
 
 /**
  *
@@ -157,12 +157,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
         });
 
     $("#cluster_toolbar_parameters input").change(function () {
-        tuneupParameters(jsonUrl_cust, $("#n_clusters").val(), $('#n_init').val(), $('#random_state').val(), $('#algorithm').val());
+        tuneupParameters(jsonUrl_cust, $("#n_clusters").val(), $('#n_init').val(), $('#random_state').val(), $('#batch_size').val());
     });
 
     $("#cluster_toolbar_parameters select").change(function () {
         //$( "select#foo option:checked" ).val();
-        tuneupParameters(jsonUrl_cust, $("#n_clusters").val(), $('#n_init').val(), $('#random_state').val(), $('#algorithm').val());
+        tuneupParameters(jsonUrl_cust, $("#n_clusters").val(), $('#n_init').val(), $('#random_state').val(), $('#batch_size').val());
     });
 
     $("#actual_cust").hide();
@@ -193,19 +193,21 @@ document.addEventListener('DOMContentLoaded', function (event) {
      * @param init
      * @param n_init
      * @param random_state
-     * @param algorithm
+     * @param batch_size
      */
-    function tuneupParameters(jsonUrl_cust, n_clusters, n_init, random_state, algorithm) {
+    function tuneupParameters(jsonUrl_cust, n_clusters, n_init, random_state, batch_size) {
         //generate assignment 4 clustering new pred
         let requestParameter = '?n_clusters=' + n_clusters;
         requestParameter += '&n_init=' + n_init;
         requestParameter += '&random_state=' + random_state;
-        requestParameter += '&algorithm=' + algorithm;
+        requestParameter += '&batch_size=' + batch_size;
         let finalUrl = jsonUrl_cust + requestParameter;
         $('#cluster_mainPanel').empty();
         d3.json(finalUrl, function (error, data) {
+            let score = data.score;
             let jsonObj_orig = JSON.parse(data.df);
             let jsonObj = JSON.parse(data.new_df);
+            $('#ari_score').html(score);
             init(jsonObj, "#cluster_mainPanel");
             init(jsonObj_orig, "#cluster_mainPanel_orig");
 

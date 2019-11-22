@@ -6,7 +6,7 @@ assignment4Data = data.getAssignment4Data()
 
 
 @application.route('/')
-def hello_world():
+def index():
     return render_template('index.html')
 
 '''
@@ -27,8 +27,8 @@ def read_iris_clustering():
     n_clusters = request.args.get('n_clusters', default=0, type=int)
     n_init = request.args.get('n_init', default=10, type=int)
     random_state = request.args.get('random_state', default='None')
-    algorithm = request.args.get('algorithm', default='auto')
-    df = data.read_iris_clustering(n_clusters, n_init, random_state, algorithm)
+    batch_size = request.args.get('batch_size', default=100, type=int)
+    df = data.read_iris_clustering(n_clusters, n_init, random_state, batch_size)
     return jsonify(df)
 
 
@@ -47,8 +47,8 @@ def read_wine_clustering():
     n_clusters = request.args.get('n_clusters', default=0, type=int)
     n_init = request.args.get('n_init', default=10, type=int)
     random_state = request.args.get('random_state', default='None')
-    algorithm = request.args.get('algorithm', default='auto')
-    df = data.read_wine_clustering(n_clusters,  n_init, random_state, algorithm)
+    batch_size = request.args.get('batch_size', default=100, type=int)
+    df = data.read_wine_clustering(n_clusters, n_init, random_state, batch_size)
     return jsonify(df)
 
 
@@ -67,8 +67,8 @@ def read_car_clustering():
     n_clusters = request.args.get('n_clusters', default=0, type=int)
     n_init = request.args.get('n_init', default=10, type=int)
     random_state = request.args.get('random_state', default='None')
-    algorithm = request.args.get('algorithm', default='auto')
-    df = data.read_car_clustering(n_clusters, n_init, random_state, algorithm)
+    batch_size = request.args.get('batch_size', default=100, type=int)
+    df = data.read_car_clustering(n_clusters, n_init, random_state, batch_size)
     return jsonify(df)
 
 
@@ -87,8 +87,8 @@ def read_assignment1_clustering():
     n_clusters = request.args.get('n_clusters', default=0, type=int)
     n_init = request.args.get('n_init', default=10, type=int)
     random_state = request.args.get('random_state', default='None')
-    algorithm = request.args.get('algorithm', default='auto')
-    df = data.read_assignment1_clustering(n_clusters, n_init, random_state, algorithm)
+    batch_size = request.args.get('batch_size', default=100, type=int)
+    df = data.read_assignment1_clustering(n_clusters, n_init, random_state, batch_size)
     return jsonify(df)
 
 
