@@ -1,3 +1,7 @@
+/**
+ * This JS function comes from my assignment 2, part of the data point coordination forum is from
+ *
+ */
 (function () {
 
     //define global variables;

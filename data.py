@@ -43,6 +43,16 @@ class readAssignment4Data:
     def assignment1(self) -> pd.DataFrame:
         if self._assignment1 is None:
             self._assignment1 = pd.read_csv(self.assignment1_path)
+        # normalize the data
+        '''
+        Index(['age', 'workclass', 'fnlwgt', 'education', 'education-num',
+       'marital-status', 'occupation', 'relationship', 'race', 'sex',
+       'capital-gain', 'capital-loss', 'hours-per-week', 'native-country',
+       'salary'],
+      dtype='object')
+        '''
+        # because capital-gain always 0, remove it.
+        self._assignment1 = self._assignment1.drop(['capital-gain'],axis=1)
         return self._assignment1
 
 
