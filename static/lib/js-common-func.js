@@ -79,6 +79,14 @@ function generateTables(allRows, graphOptions) {
 }
 
 document.addEventListener('DOMContentLoaded', function (event) {
+    // add loading state
+    let newDiv = document.createElement('div');
+    newDiv.className = '_dash-loading-callback';
+    newDiv.id = 'loading';
+    document.body.appendChild(
+        newDiv,
+        document.getElementById('content'));
+    // end of loading state
 
     let jsonUrl = '/read_iris';
     let jsonUrl_corr = '/read_iris_correlation';
@@ -156,14 +164,16 @@ document.addEventListener('DOMContentLoaded', function (event) {
             'div': 'myDiv_table'
         });
 
-    $("#cluster_toolbar_parameters input").change(function () {
+    $("#submit").click(function () {
+        newDiv = document.createElement('div');
+        newDiv.className = '_dash-loading-callback';
+        newDiv.id = 'loading';
+        document.body.appendChild(
+            newDiv,
+            document.getElementById('content'));
         tuneupParameters(jsonUrl_cust, $("#n_clusters").val(), $('#n_init').val(), $('#random_state').val(), $('#batch_size').val());
     });
 
-    $("#cluster_toolbar_parameters select").change(function () {
-        //$( "select#foo option:checked" ).val();
-        tuneupParameters(jsonUrl_cust, $("#n_clusters").val(), $('#n_init').val(), $('#random_state').val(), $('#batch_size').val());
-    });
 
     $("#actual_cust").hide();
 
@@ -211,6 +221,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
             init(jsonObj, "#cluster_mainPanel");
             init(jsonObj_orig, "#cluster_mainPanel_orig");
 
+            setTimeout(function () {
+                document.getElementById('loading').remove();
+            }, 2000);
+
         });
     }
 
@@ -224,6 +238,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
     setTimeout(function () {
         $("#tabs").tabs();
+        document.getElementById('loading').remove();
     }, timeout);
 
 
