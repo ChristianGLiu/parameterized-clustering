@@ -82,7 +82,7 @@ abstract: |
     4.  General UI introduction (the details will be described specifically
         to each of questions of assignment 4):
 
-        ![image](img/ui-layout){width="0.7\columnwidth"}
+        ![image](../master/img/ui-layout){width="0.7\columnwidth"}
 
         -   Left Menu: they are four different tables which are required by
             assignment 4:
