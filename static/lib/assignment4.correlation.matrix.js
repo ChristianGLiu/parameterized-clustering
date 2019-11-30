@@ -1,6 +1,12 @@
+/**
+ * This function is to generate the correlation heatmap based on plotly lib
+ * @param x the xaxis values
+ * @param y the yaxis values
+ * @param z the density of coordinates of heatmap
+ * @param div the div element used for showing the heatmap
+ */
 function generateHeadMap(x, y, z, div) {
     trace1 = {
-        uid: '1b81c623-351b-4b17-b629-552cec57015c',
         type: 'heatmap',
         x: x,
         y: y,

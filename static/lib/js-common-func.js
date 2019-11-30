@@ -3,19 +3,19 @@
 let timeout = 5000;
 
 /**
- *
+ * This function is to get HTTP REQUEST parameters
  * @param name
  * @returns {string}
  */
 function getRequest(name) {
-    let url_string = window.location.href; // www.test.com?filename=test
+    let url_string = window.location.href;
     let url = new URL(url_string);
     let paramValue = url.searchParams.get(name);
     return paramValue;
 }
 
 /**
- *
+ * this function is to switch back to forth of predictive and actual clustering
  */
 function goToClustering() {
     $("#actual_cust").hide();
@@ -24,7 +24,7 @@ function goToClustering() {
 }
 
 /**
- *
+ * this function is to switch back to forth of predictive and actual clustering
  */
 function goToActual() {
     $("#actual_cust").show();
@@ -33,10 +33,10 @@ function goToActual() {
 }
 
 /**
- *
- * @param allRows
- * @param columns
- * @param graphOptions
+ * this function is to showing the tabular view data directly from backend REST json call
+ * @param allRows JSON formatted data comes from backend
+ * @param columns What columns need to be dealt with in this cased
+ * @param graphOptions the addtional graphOptions to tune up the charts
  */
 function generateTables(allRows, graphOptions) {
 
@@ -78,8 +78,12 @@ function generateTables(allRows, graphOptions) {
     Plotly.plot(graphOptions['div'], data);
 }
 
+/**
+ * the automatic loading function flow after page loading
+ */
 document.addEventListener('DOMContentLoaded', function (event) {
-    // add loading state
+    // add loading state to lock the screen when backend working with data
+    // this small piece of code snippet credit to https://community.plot.ly/t/dash-loading-states/5687
     let newDiv = document.createElement('div');
     newDiv.className = '_dash-loading-callback';
     newDiv.id = 'loading';
@@ -88,6 +92,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
         document.getElementById('content'));
     // end of loading state
 
+    // initilize the REST URL for different calls
     let jsonUrl = '/read_iris';
     let jsonUrl_corr = '/read_iris_correlation';
     let jsonUrl_cust = '/read_iris_clustering';
@@ -117,8 +122,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
         jsonUrl_table = '/show_table?table=assignment1';
         timeout = 10000;
     }
-
-    console.log("jsonUrl:", jsonUrl);
 
     //generate assignment 2 Radviz from backend REST service response
     d3.json(jsonUrl, function (error, data) {
@@ -152,19 +155,52 @@ document.addEventListener('DOMContentLoaded', function (event) {
         let score = data.score;
         let jsonObj_orig = JSON.parse(data.df);
         let jsonObj = JSON.parse(data.new_df);
-        $('#ari_score').html(score);
-        init(jsonObj, "#cluster_mainPanel");
-        init(jsonObj_orig, "#cluster_mainPanel_orig");
+        if (typeof data.score !== 'undefined') {
+            $('#ari_score').html(score);
+            init(jsonObj, "#cluster_mainPanel");
+            init(jsonObj_orig, "#cluster_mainPanel_orig");
+            $("#error_msg").hide();
+        } else {
+            $("#error_msg").html(data.error);
+            $("#error_msg").show();
+        }
 
     });
 
+    // generate tabular view on the page
     generatePlot(jsonUrl_table, generateTables,
         {
             'title': 'Retrieval Table View',
             'div': 'myDiv_table'
         });
 
+    // whenever user tries to input hyperparameters, reset error message
+    $("#cluster_toolbar_parameters input").click(function(){
+        $("#error_msg").hide();
+    });
+
+
+    // add click event action to submit button to tune up the hyperparameters of clustering
     $("#submit").click(function () {
+        let error_msg  = '';
+        if(!$.isNumeric($("#n_clusters").val()) && $("#n_clusters").val() != '') {
+            error_msg += '  n_clusters has to be digit number;';
+            $("#error_msg").html(error_msg);
+            $("#error_msg").show();
+            return;
+        }
+        if(!$.isNumeric($("#batch_size").val()) && $("#batch_size").val() != '') {
+            error_msg += '  batch_size has to be digit number;';
+            $("#error_msg").html(error_msg);
+            $("#error_msg").show();
+            return;
+        }
+        if(!$.isNumeric($("#n_init").val()) && $("#n_init").val() != '') {
+            error_msg += '  n_init has to be digit number;';
+            $("#error_msg").html(error_msg);
+            $("#error_msg").show();
+            return;
+        }
         newDiv = document.createElement('div');
         newDiv.className = '_dash-loading-callback';
         newDiv.id = 'loading';
@@ -175,11 +211,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
     });
 
 
+    // by default we hide the actual classifiction, by default we show the predictive clustering of K-man on the page
+    // the can swtich one to another based on the assignment requirements
     $("#actual_cust").hide();
 
 
     /**
-     *
+     * The reusable function comes from my own code of group project, it is to generate different types of plot
      * @param jsonUrl
      * @param func
      * @param columns
@@ -197,13 +235,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
     }
 
     /**
-     *
-     * @param jsonUrl_cust
-     * @param n_clusters
-     * @param init
-     * @param n_init
-     * @param random_state
-     * @param batch_size
+     * This function specifically tune up the parameter of K-mean clustering
+     * @param jsonUrl_cust the REST service call url
+     * @param n_clusters how many clusters
+     * @param init what is initilized way
+     * @param n_init how much levels for the initilaiztion
+     * @param random_state how much randomization of data selection
+     * @param batch_size what the batcch size used for clustering
      */
     function tuneupParameters(jsonUrl_cust, n_clusters, n_init, random_state, batch_size) {
         //generate assignment 4 clustering new pred
@@ -214,28 +252,29 @@ document.addEventListener('DOMContentLoaded', function (event) {
         let finalUrl = jsonUrl_cust + requestParameter;
         $('#cluster_mainPanel').empty();
         d3.json(finalUrl, function (error, data) {
-            let score = data.score;
-            let jsonObj_orig = JSON.parse(data.df);
-            let jsonObj = JSON.parse(data.new_df);
-            $('#ari_score').html(score);
-            init(jsonObj, "#cluster_mainPanel");
-            init(jsonObj_orig, "#cluster_mainPanel_orig");
+            if (typeof data.score !== 'undefined') {
+                let score = data.score;
+                let jsonObj_orig = JSON.parse(data.df);
+                let jsonObj = JSON.parse(data.new_df);
+                $('#ari_score').html(score);
+                init(jsonObj, "#cluster_mainPanel");
+                init(jsonObj_orig, "#cluster_mainPanel_orig");
+            } else {
+                $("#error_msg").html(data.error);
+                $("#error_msg").show();
+            }
 
             setTimeout(function () {
-                document.getElementById('loading').remove();
-            }, 2000);
+                    document.getElementById('loading').remove();
+                }, 2000);
 
         });
     }
 
-
-//
-// generatePlot('/show_table?department_id=1', generateTables,
-//         ['product_id', 'product_name', 'order_hour_of_day', 'order_dow', 'counts'], {
-//             'title': 'Retrieval Table View',
-//             'div': 'myDiv_table'
-//         });
-
+    /**
+     * this function is trying to resolved the issue of HTTP header returns before the data calculated in back-end
+     * espeically for large data set ML
+     */
     setTimeout(function () {
         $("#tabs").tabs();
         document.getElementById('loading').remove();

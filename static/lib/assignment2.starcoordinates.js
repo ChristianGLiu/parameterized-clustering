@@ -1,6 +1,5 @@
 /**
- * This JS function comes from my assignment 2, part of the data point coordination forum is from
- *
+ * This JS function comes from my assignment 2, part of the data point coordination forum is from https://github.com/WYanChao
  */
 (function () {
 
@@ -200,6 +199,8 @@
 
         dataAfter = data.slice();
         dataAfter = normailzeData(dataAfter, convertedData);
+
+        console.log("dataAfter:",dataAfter)
 
         //for star coodinates
 
@@ -624,7 +625,7 @@
 
                         toolbarfeatureLables.selectAll('text.text').data(sliderClasses)
                             .enter().append('text').attr('class', 'text')
-                            .attr('x', 15)
+                            .attr('x', 25)
                             .attr('y', (d, i) => 10 + i * 25 + 5)
                             .text(d => d).attr('font-size', '16pt').attr('dominat-baseline', 'middle')
                             .on('mouseover', function (d) {
@@ -659,27 +660,3 @@
     window.init = init;
 
 })();
-
-//because chrome some browser banner full path of selected file. so only work when you put file in the csv folder of index.html.
-//let filename = './csv/iris.csv';
-//let data = [];
-//it reuse function from TA to trigger of page loading
-document.addEventListener('DOMContentLoaded', function (event) {
-
-
-    //
-    // $("#selectfile").change(function (event) {
-    //     let tmppath = $('input[type=file]').val();
-    //     tempath = tmppath.split(/.*[\/|\\]/)[1];
-    //     tempath = "./csv/" + tempath;
-    //     console.log("selected file:", tempath);
-    //
-    //     d3.csv(tempath, function (error, data) {
-    //         if (error) throw(error);
-    //
-    //         init(data);
-    //     });
-    //
-    //
-    // });
-});
