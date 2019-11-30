@@ -30,7 +30,7 @@ AWS style:
  
 `python application.py`
 
-![image](../master/img/ui-layout.png){width="0.7\columnwidth"}
+![image](../master/img/ui-layout.png){:height="50%" width="50%"}
 
 ---
 abstract: |
