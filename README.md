@@ -1,6 +1,4 @@
-# Assingment 4 Christian Gang Liu - B00415613
-##### There is additional document "README - assignment4 - Christian Gang Liu - B00415613.pdf"
-##### To specifically answer the answers of assignment4 with screenshots.
+# Author Christian Gang Liu
 
 This project requires **Python 3.6+** to run.
         
